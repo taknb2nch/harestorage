@@ -79,18 +79,11 @@ func (s *GCSStorage) Put(ctx context.Context, name string, r io.Reader, opts *Pu
 		}
 	}
 
-	_, err = io.Copy(w, r)
+	size, err := io.Copy(w, r)
 	if err != nil {
 		fullPath := s.PathJoin(s.bucketName, name)
 
 		return 0, fmt.Errorf("failed to write file %q: %w", fullPath, err)
-	}
-
-	size, err := w.Flush()
-	if err != nil {
-		fullPath := s.PathJoin(s.bucketName, name)
-
-		return 0, fmt.Errorf("failed to flush file %q: %w", fullPath, err)
 	}
 
 	return size, nil
