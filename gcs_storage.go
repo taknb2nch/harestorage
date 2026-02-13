@@ -67,8 +67,6 @@ func (s *GCSStorage) Put(ctx context.Context, name string, r io.Reader, opts *Pu
 
 	w := s.client.Bucket(s.bucketName).Object(name).NewWriter(ctx)
 
-	defer w.Close()
-
 	if opts != nil {
 		if opts.ContentType != "" {
 			w.ContentType = opts.ContentType
@@ -84,6 +82,13 @@ func (s *GCSStorage) Put(ctx context.Context, name string, r io.Reader, opts *Pu
 		fullPath := s.PathJoin(s.bucketName, name)
 
 		return 0, fmt.Errorf("failed to write file %q: %w", fullPath, err)
+	}
+
+	err = w.Close()
+	if err != nil {
+		fullPath := s.PathJoin(s.bucketName, name)
+
+		return 0, fmt.Errorf("failed to close file %q: %w", fullPath, err)
 	}
 
 	return size, nil
