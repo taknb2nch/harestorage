@@ -16,21 +16,19 @@ var _ Storage = (*GCSStorage)(nil)
 type GCSStorage struct {
 	client     *storage.Client
 	bucketName string
-	name       string
 }
 
-// NewGCSStorage creates a new GCSStorage instance with the specified client, bucket name, and storage name.
-func NewGCSStorage(client *storage.Client, bucketName string, name string) *GCSStorage {
+// NewGCSStorage creates a new GCSStorage instance with the specified client, bucket name.
+func NewGCSStorage(client *storage.Client, bucketName string) *GCSStorage {
 	return &GCSStorage{
 		client:     client,
 		bucketName: bucketName,
-		name:       name,
 	}
 }
 
-// Name returns the name (identifier) of this storage.
+// Name returns the bucketName (identifier) of this storage.
 func (s *GCSStorage) Name() string {
-	return s.name
+	return s.bucketName
 }
 
 // Get returns an io.ReadCloser to read the object with the specified name.
